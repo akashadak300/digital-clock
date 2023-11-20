@@ -21,7 +21,7 @@ public class DigitalClock extends JFrame {
     private DigitalClockAppearanceSettings appearanceSettings;
     private JLabel timeZoneLabel;
     private TimeZone timeZone = TimeZone.getDefault();
-    private JPanel panel1, panel2, panel3, panel4;
+    private JPanel panel1, timePanel, panel3, panel4;
     private JButton setAlarmButton;
 
     public DigitalClock() {
@@ -44,12 +44,12 @@ public class DigitalClock extends JFrame {
         panel1.add(dateLabel);
         panel1.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-        // panel2 = createPanel();
-        // panel2.add(timeLabel);
+        // timePanel = createPanel();
+        // timePanel.add(timeLabel);
         timeZoneLabel = new JLabel(timeZone.getID());
 
         // Create a new panel for the date and timeZoneLabel
-        JPanel timePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 40));
+        timePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 40));
         timePanel.add(timeLabel);
         timePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         timePanel.add(timeZoneLabel);
@@ -59,7 +59,7 @@ public class DigitalClock extends JFrame {
         // Add clockPanel to the frame
         add(panel1);
         add(timePanel);
-        // add(panel2);
+        // add(timePanel);
 
         panel4 = createPanel();
         setAlarmButton = new JButton("Set Alarm");
@@ -145,25 +145,26 @@ public class DigitalClock extends JFrame {
     public void setClockTextColor(Color color) {
         timeLabel.setForeground(color);
         dateLabel.setForeground(color);
+        timeZoneLabel.setForeground(color);
     }
 
     // Setter method for frame color
     public void setClockFrameColor(Color color) {
         panel1.setBorder(BorderFactory.createLineBorder(color, getClockFrameWidth()));
-        panel2.setBorder(BorderFactory.createLineBorder(color, getClockFrameWidth()));
+        timePanel.setBorder(BorderFactory.createLineBorder(color, getClockFrameWidth()));
     }
 
     // Setter method for background color
     public void setClockBackgroundColor(Color color) {
         panel1.setBackground(color);
-        panel2.setBackground(color);
+        timePanel.setBackground(color);
     }
 
     // Setter method for frame width
     public void setClockFrameWidth(int width) {
         panel1.setBorder(BorderFactory.createLineBorder(getClockFrameColor(), width));
 
-        panel2.setBorder(BorderFactory.createLineBorder(getClockFrameColor(), width));
+        timePanel.setBorder(BorderFactory.createLineBorder(getClockFrameColor(), width));
     }
 
     // Getter method for frame color
@@ -173,7 +174,7 @@ public class DigitalClock extends JFrame {
 
     // Getter method for frame width
     public int getClockFrameWidth() {
-        Border border = panel2.getBorder();
+        Border border = timePanel.getBorder();
         if (border instanceof LineBorder) {
             return ((LineBorder) border).getThickness();
         } else {
@@ -181,15 +182,6 @@ public class DigitalClock extends JFrame {
             // handle it accordingly
             return 0; // Default value, you can change it based on your requirements
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new DigitalClock().setVisible(true);
-            }
-        });
     }
 
     public void startClock() {
