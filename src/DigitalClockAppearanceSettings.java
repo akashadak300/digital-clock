@@ -22,6 +22,8 @@ public class DigitalClockAppearanceSettings {
 
         // Create buttons for different appearance options
         JButton textColorButton = new JButton("Text Color");
+        textColorButton.setFocusPainted(false);
+
         JButton frameColorButton = new JButton("Frame Color");
         JButton backgroundColorButton = new JButton("Background Color");
         JButton frameWidthButton = new JButton("Frame Width");
