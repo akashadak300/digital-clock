@@ -3,6 +3,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 
 public class DigitalClockAppearanceSettings {
 
@@ -14,7 +15,8 @@ public class DigitalClockAppearanceSettings {
 
     public void showAppearanceOptions() {
         // Create a dialog for appearance options
-        JDialog appearanceDialog = new JDialog((Frame) SwingUtilities.getRoot(digitalClock), "Appearance Options", true);
+        JDialog appearanceDialog = new JDialog((Frame) SwingUtilities.getRoot(digitalClock), "Appearance Options",
+                true);
         appearanceDialog.setSize(300, 200);
         appearanceDialog.setLocationRelativeTo(digitalClock);
 
@@ -98,17 +100,47 @@ public class DigitalClockAppearanceSettings {
             int width = Integer.parseInt(widthStr);
             digitalClock.setClockFrameWidth(width);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(digitalClock, "Invalid input. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(digitalClock, "Invalid input. Please enter a valid number.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void changeDateStyle() {
-        String[] styles = {"Short", "Medium", "Long"};
-        String selectedStyle = (String) JOptionPane.showInputDialog(digitalClock, "Choose Date Style:", "Date Style", JOptionPane.QUESTION_MESSAGE, null, styles, styles[0]);
-        // Implement code to set the date style based on the selected option
-        // You can use SimpleDateFormat to format the date accordingly
-        // For example:
-        // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // String formattedDate = dateFormat.format(new Date());
+        String[] styles = { "Short", "Medium", "Long" };
+        String selectedStyle = (String) JOptionPane.showInputDialog(
+                digitalClock,
+                "Choose Date Style:",
+                "Date Style",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                styles,
+                styles[0]);
+
+        // Check if the user selected a style
+        if (selectedStyle != null) {
+            SimpleDateFormat dateFormat;
+
+            // Apply the selected date style
+            switch (selectedStyle) {
+                case "Short":
+                    dateFormat = new SimpleDateFormat("MM/dd/yy");
+                    break;
+                case "Medium":
+                    dateFormat = new SimpleDateFormat("MMM dd, yyyy");
+                    break;
+                case "Long":
+                    dateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
+                    break;
+                default:
+                    // Default to a standard date format
+                    dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    break;
+            }
+
+            // Set the date format in the DigitalClock
+            digitalClock.setDateLabelFormat(dateFormat);
+            digitalClock.updateClock(); // Update the clock to reflect the changes
+        }
     }
+
 }
