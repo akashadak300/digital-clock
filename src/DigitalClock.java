@@ -6,71 +6,80 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.TimerTask;
+
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.util.Timer;
 
 public class DigitalClock extends JFrame {
-    private Font font = new Font("", Font.BOLD, 35);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // Default date format
+    private Font font = new Font("", Font.BOLD, 20);
+    private Font fontForCopyRight = new Font("", Font.BOLD, 12);
     private JLabel timeLabel;
     private JLabel dateLabel;
-    // private JPanel clockPanel;
     private DigitalClockAppearanceSettings appearanceSettings;
-    private JLabel timeZoneLabel; // New label to display the selected time zone
-    private TimeZone timeZone = TimeZone.getDefault(); // Default time zone
-    private JPanel panel4, panel1,panel2,panel3;
+    private JLabel timeZoneLabel;
+    private TimeZone timeZone = TimeZone.getDefault();
+    private JPanel panel1, panel2, panel3, panel4;
     private JButton setAlarmButton;
-
-
 
     public DigitalClock() {
         // Initialize the JFrame
         super("Digital Clock");
-        setLayout(new GridLayout(4,1));
+        setLayout(new GridLayout(4, 1));
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        startClock();
 
         // Create components
         timeLabel = new JLabel("00:00:00", SwingConstants.CENTER);
         timeLabel.setFont(new Font("Arial", Font.PLAIN, 24));
-        timeLabel.setForeground(Color.GREEN);
         dateLabel = new JLabel("00-00-0000", SwingConstants.CENTER);
         dateLabel.setFont(new Font("Arial", Font.PLAIN, 24));
 
-        panel1 = new JPanel();
-        panel1.add(timeLabel);
+        startClock();
+        panel1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 40));
+        // panel1.add(dateLabel);
+        panel1.add(dateLabel);
+        panel1.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-        panel2 = new JPanel();
-        panel2.add(dateLabel);
+        // panel2 = createPanel();
+        // panel2.add(timeLabel);
+        timeZoneLabel = new JLabel(timeZone.getID());
+
+        // Create a new panel for the date and timeZoneLabel
+        JPanel timePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 40));
+        timePanel.add(timeLabel);
+        timePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        timePanel.add(timeZoneLabel);
+
+        // Add timePanel to the frame
 
         // Add clockPanel to the frame
         add(panel1);
-        add(panel2);
+        add(timePanel);
+        // add(panel2);
 
-        panel4 = new JPanel();
+        panel4 = createPanel();
         setAlarmButton = new JButton("Set Alarm");
-        panel4.add(setAlarmButton);
         setAlarmButton.setFont(font);
+        setAlarmButton.setFocusPainted(false);
+
+        panel4.add(setAlarmButton);
 
         setAlarmButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-              new SetAlarmFrame(DigitalClock.this);
+                new SetAlarmFrame(DigitalClock.this);
             }
-      
-          });
+        });
         add(panel4);
-
-    
-
-
-
-
 
         // Create the "Appearances" button
         JButton appearanceButton = new JButton("Appearances");
+        appearanceButton.setFont(font);
+
         appearanceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,14 +87,13 @@ public class DigitalClock extends JFrame {
             }
         });
 
-        // Add the "Appearances" button to the frame
-        // add(appearanceButton, BorderLayout.SOUTH);
-    panel4.add(appearanceButton);
+        panel4.add(appearanceButton);
 
         // Initialize DigitalClockAppearanceSettings
         appearanceSettings = new DigitalClockAppearanceSettings(this);
 
         JButton timeZoneButton = new JButton("Set Time Zone");
+        timeZoneButton.setFont(font);
         timeZoneButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,13 +101,39 @@ public class DigitalClock extends JFrame {
             }
         });
 
-        timeZoneLabel = new JLabel("Selected Time Zone: " + timeZone.getID()); // Initialize the label
-
-        // Add the "Set Time Zone" button and label to the frame
-        panel3=new JPanel();
-        panel3.add(timeZoneLabel);
+        panel3 = createPanel();
+        // panel3.add(timeZoneLabel);
+        JLabel copyrightLabel = new JLabel("© Your Company 2023"); // Replace with your copyright text
+        copyrightLabel.setFont(fontForCopyRight);
+        copyrightLabel.setForeground(Color.WHITE);
         panel3.add(timeZoneButton);
+        panel3.add(copyrightLabel);
+        panel3.setBackground(Color.gray);
         add(panel3);
+    }
+
+    private JPanel createPanel() {
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));// Add padding
+        return panel;
+    }
+
+    public void setDateLabelFormat(SimpleDateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public void updateClock() {
+        Date currentDate = new Date();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
+
+        // Set the time zone for formatting
+        timeFormat.setTimeZone(timeZone);
+
+        String time = timeFormat.format(currentDate);
+        String date = dateFormat.format(currentDate);
+
+        timeLabel.setText(time);
+        dateLabel.setText(date);
     }
 
     private void showAppearanceOptions() {
@@ -139,7 +173,14 @@ public class DigitalClock extends JFrame {
 
     // Getter method for frame width
     public int getClockFrameWidth() {
-        return ((LineBorder) panel2.getBorder()).getThickness();
+        Border border = panel2.getBorder();
+        if (border instanceof LineBorder) {
+            return ((LineBorder) border).getThickness();
+        } else {
+            // If the border is not an instance of LineBorder, return a default value or
+            // handle it accordingly
+            return 0; // Default value, you can change it based on your requirements
+        }
     }
 
     public static void main(String[] args) {
@@ -169,8 +210,7 @@ public class DigitalClock extends JFrame {
 
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
-        timeZoneLabel.setText("Selected Time Zone: " + timeZone.getID()); // Update the label
-        // Schedule the update on the Event Dispatch Thread (EDT)
+        timeZoneLabel.setText("Selected Time Zone: " + timeZone.getID());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -179,18 +219,17 @@ public class DigitalClock extends JFrame {
         });
     }
 
-    private void updateClock() {
-        Date currentDate = new Date();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    // public void updateClock() {
+    // Date currentDate = new Date();
+    // SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
+    // SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-        // Set the time zone for formatting
-        timeFormat.setTimeZone(timeZone);
-        dateFormat.setTimeZone(timeZone);
+    // timeFormat.setTimeZone(timeZone);
+    // dateFormat.setTimeZone(timeZone);
 
-        String time = timeFormat.format(currentDate);
-        String date = dateFormat.format(currentDate);
-        timeLabel.setText(time);
-        dateLabel.setText(date);
-    }
+    // String time = timeFormat.format(currentDate);
+    // String date = dateFormat.format(currentDate);
+    // timeLabel.setText(time);
+    // dateLabel.setText(date);
+    // }
 }
