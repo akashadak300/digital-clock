@@ -23,6 +23,7 @@ public class DigitalClock extends JFrame {
     private TimeZone timeZone = TimeZone.getDefault();
     private JPanel panel1, timePanel, panel3, panel4;
     private JButton setAlarmButton;
+    
 
     public DigitalClock() {
         // Initialize the JFrame

@@ -1,0 +1,1 @@
+In the digital clock zip, Extract it and then open the Src folder. Inside the src folder, you will find Main.Java. This file contains your main method, so you should execute this file.
